@@ -1,0 +1,164 @@
+CREATE DATABASE if not EXISTS 123;
+CREATE TABLE if not EXISTS customers(
+c_ID INT,
+Name varchar(50),
+Address varchar(255),
+Phone varchar(20));
+-----------------------------------------------
+DROP TABLE if EXISTS `orders2`;
+----------------------------------------------
+ALTER TABLE user1
+MODIFY COLUMN dis VARCHAR(20);
+---------------------------------------------------
+ALTER TABLE customers
+ADD COLUMN intt INT;
+------------------------------------------------
+CREATE TABLE if NOT EXISTS user2(
+    C_id int NOT NULL UNIQUE,
+    Name VARCHAR(50) NOT NULL,
+    Address VARCHAR(255),
+    Phone VARCHAR(10)
+);
+
+---------------------------------------------CONSTRAINT UNIQUE
+CREATE TABLE if NOT EXISTS user2(
+    C_id int NOT NULL,
+    Name VARCHAR(50) NOT NULL,
+    Address VARCHAR(255),
+    Phone VARCHAR(10),
+    CONSTRAINT a123 UNIQUE(C_id,Name)
+);
+---------------------------------------------PRIMARY KEY
+CREATE TABLE orders(
+    C_id int NOT NULL,
+    O_id int NOT NULL,
+    order_NO int,
+    CONSTRAINT C_id PRIMARY KEY(C_id)
+);
+----------------------------------------------
+ALTER TABLE user2
+ADD CONSTRAINT C_id PRIMARY KEY(C_id);
+-------------------------------------------------
+ALTER TABLE `orders` 
+CHANGE `order_NO` `order_NO` INT(11) NOT NULL,
+CHANGE `O_id` `O_id` INT(11) NOT NULL; 
+---------------------------------------------------
+CREATE TABLE orders2(
+    O_id int NOT NULL PRIMARY KEY,
+    order_NO int NOT NULL,
+    C_id int,
+    CONSTRAINT C_id FOREIGN KEY(C_id)REFERENCES user2(C_id)
+);
+---------------------------------------------------
+ALTER TABLE `orders2` DROP INDEX `F_id`;
+-------------------------------------------------------------FOREIGN KEY
+ALTER TABLE orders
+ADD FOREIGN KEY (C_id) REFERENCES customers(c_ID);
+---------------------------------------------------
+ALTER TABLE `ass`.`orders2` DROP INDEX `C_id`, ADD INDEX `F_id` (`C_id`) USING BTREE; 
+--------------------------------------------------------------DEFAULT
+ALTER TABLE `orders` CHANGE `C_id` `C_id` INT(11) NOT NULL; 
+--------------------------------------------------------------
+CREATE TABLE if not EXISTS customers(
+c_ID INT,
+Name varchar(50)NOT NULL,
+Address varchar(255)DEFAULT '未知',
+Phone varchar(20));
+------------------------------
+ALTER TABLE customers ALTER COLUMN Phone SET DEFAULT '未知';
+-------------------------------------------------------------AUTO_INCREMENT
+
+CREATE TABLE if not EXISTS customers(
+c_ID INT AUTO_INCREMENT,
+Name varchar(50)NOT NULL,
+Address varchar(255)DEFAULT '未知',
+Phone varchar(20),
+PRIMARY KEY(C_id)
+);
+
+--------------------------------------------------------------VIEW
+
+CREATE OR REPLACE VIEW V(ID,Name) AS SELECT c_ID,Name FROM customers;
+--------------------------------------------------------------INSERT INTO
+
+INSERT INTO customers(Name,Phone)
+VALUES('陳','0900'),
+('李','0800');
+---------------------------------------------------------------UPDATE
+UPDATE customers
+SET Phone='0222'
+WHERE c_ID='3';
+---------------------------------------------------------------SELECT
+SELECT orders.C_id AS 'C',orders.O_id AS 'O'
+FROM orders;
+
+---------------------------------------------------------------Backup
+CREATE TABLE a123
+SELECT *
+FROM customers;
+---------------------------------------------------------------SELECT FROM WHERE
+SELECT customers.Name,customers.Phone,customers.Address
+FROM customers
+WHERE customers.c_ID!=2 && customers.Phone IS NULL;
+---------------------------------------------------------------ORDER BY
+SELECT customers.c_ID,customers.Phone
+FROM customers
+WHERE customers.c_ID!=2
+ORDER BY customers.c_ID ASC LIMIT 3,5;                         #LIMIT 3,5=第4筆資料往下算5筆
+
+-----------------------------------------------------------------WHERE IN BETWEEN  AND
+SELECT * FROM `frinend` 
+WHERE (frinend.name 
+IN ('流川楓') || frinend.sex='男') 
+&& frinend.age BETWEEN 10 AND 50
+-----------------------------------------------------------------
+SELECT * 
+FROM `frinend` 
+WHERE (frinend.name IN ('流川楓') || frinend.sex='男') && frinend.age BETWEEN 10 AND 50
+-----------------------------------------------------------------LIKE(模糊辨識)
+SELECT * 
+FROM `frinend` 
+WHERE frinend.age 
+LIKE '%20_%'
+-----------------------------------------------------------------GROUP BY
+SELECT frinend.sex,
+SUM(price)
+FROM frinend
+GROUP BY frinend.sex;
+-----------------------------------------------------------------INNER JOIN
+SELECT customers.c_ID,customers.Name,orders.O_id,orders.order_NO
+FROM customers
+INNER JOIN orders
+ON customers.c_ID=orders.C_id
+ORDER BY customers.Name DESC;
+-----------------------------------------------------------------LEFT(RIGHT) JOIN
+SELECT customers.c_ID,customers.Name,orders.O_id,orders.order_NO
+FROM customers LEFT JOIN orders
+ON customers.c_ID=orders.C_id
+ORDER BY customers.c_ID ASC;
+-----------------------------------------------------------------INNER JOIN GROUP BY
+SELECT customers.c_ID,customers.Name,orders.O_id,orders.order_NO,
+SUM(orders.order_NO)
+FROM customers
+INNER JOIN orders
+ON customers.c_ID=orders.C_id
+GROUP BY customers.c_ID
+ORDER BY customers.Name DESC;
+-----------------------------------------------------------------UNION 資料表資料合併
+SELECT orders.order_NO
+FROM orders 
+UNION SELECT orders2.order_NO
+FROM orders2;
+
+
+
+
+
+
+
+
+
+
+
+
+
